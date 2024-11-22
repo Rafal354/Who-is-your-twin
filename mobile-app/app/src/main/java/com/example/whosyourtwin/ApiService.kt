@@ -25,7 +25,7 @@ data class PhotoInfo(
 
 interface ApiService {
     @Multipart
-    @POST("/process_photo")
+    @POST("/v1/similarity")
     fun uploadImage(
         @Part image: MultipartBody.Part
     ): Call<ResponseBody>
