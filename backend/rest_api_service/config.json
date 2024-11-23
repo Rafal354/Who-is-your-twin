@@ -2,6 +2,6 @@
     "trained_models_path": "./endpoints/v1/",
     "model_name": "my_trained_model_old.keras",
     "port": 5000,
-    "host": "localhost",
+    "host": "0.0.0.0",
     "debug": true
 }
