@@ -8,4 +8,7 @@
     <string name="image_info">Image Info</string>
     <string name="send_request_to_python">Send Request to Service</string>
     <string name="results_will_appear_here">Results will appear here</string>
+    <string name="go_to_main_activity">Go to Main Activity</string>
+    <string name="background_image">background photo\n</string>
+    <string name="who_s_your_twin">Who\'s Your Twin?</string>
 </resources>
