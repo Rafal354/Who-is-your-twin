@@ -11,6 +11,7 @@ from .config.config import Config
 
 app = Flask(__name__)
 
+
 @app.route("/")
 def hello_world():
     """
@@ -19,7 +20,7 @@ def hello_world():
     return "Hello, World!"
 
 
-@app.route("/v1/similarity")
+@app.route("/v1/similarity", methods=["POST"])
 def get_v1_similarity():
     """
     gets the similarity to the celebrities based on trained model
@@ -38,4 +39,4 @@ def get_v1_similarity():
 
 if __name__ == '__main__':
     conf = Config()
-    app.run(debug=conf.debug, port=conf.port)
+    app.run(host=conf.host, port=conf.port, debug=conf.debug)
