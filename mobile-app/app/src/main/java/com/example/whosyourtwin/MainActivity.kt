@@ -2,12 +2,13 @@ package com.example.whosyourtwin
 
 import android.Manifest
 import android.content.pm.PackageManager
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -17,6 +18,7 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -56,9 +58,10 @@ class MainActivity : AppCompatActivity() {
         val captureButton: Button = findViewById(R.id.captureButton)
         val sendRequestButton: Button = findViewById(R.id.sendRequestButton)
 
-        // Capture button click listener
         captureButton.setOnClickListener {
             if (allPermissionsGranted()) {
+                val resultsTextView = findViewById<TextView>(R.id.resultsTextView)
+                resultsTextView.visibility = View.INVISIBLE
                 photoUri = createImageFileUri()
                 cameraLauncher.launch(photoUri)
             } else {
@@ -66,13 +69,12 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        // Send request button click listener
         sendRequestButton.setOnClickListener {
             val filepath = photoUri.path
             val sanitizedPath = Uri.encode(filepath)
 
             if (sanitizedPath != null) {
-                uploadImageToServer(sanitizedPath)
+                uploadImageToServer()
             } else {
                 Log.e(TAG, "No photo captured yet")
             }
@@ -86,33 +88,39 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun uploadImageToServer(filepath: String) {
-
-//        println("File path: $filepath")
-//
-//        val imageFile = File(filepath)
-//
-//        // Check if the file exists before proceeding
-//        if (!imageFile.exists()) {
-//            Log.e(TAG, "Image file not found at path: $filepath")
-//            return
-//        }
-
-        // Prepare the request body for the file (image/jpeg or appropriate MIME type)
+    private fun uploadImageToServer() {
         val requestFile = RequestBody.create("image/jpeg".toMediaTypeOrNull(), savedImageFile)
-        val body = MultipartBody.Part.createFormData("image", savedImageFile.name, requestFile)
+        val body = MultipartBody.Part.createFormData("file", savedImageFile.name, requestFile)
 
-        // Make the request to the Flask server
         RetrofitClient.instance.uploadImage(body).enqueue(object : Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if (response.isSuccessful) {
-                    // The server returns the processed image as a ResponseBody
-                    val inputStream = response.body()?.byteStream()
-                    val bitmap = BitmapFactory.decodeStream(inputStream)
-                    imageView.setImageBitmap(bitmap) // Set the processed image to the ImageView
+                    val responseBody = response.body()?.string()
+                    if (!responseBody.isNullOrEmpty()) {
+                        try {
+                            val jsonResponse = JSONObject(responseBody)
+                            val results = StringBuilder()
+
+                            jsonResponse.keys().forEach {
+                                val value = jsonResponse.getDouble(it)
+                                results.append("$it: ${String.format("%.2f", value * 100)}%\n")
+                            }
+                            val resultsTextView = findViewById<TextView>(R.id.resultsTextView)
+                            resultsTextView.text = results.toString()
+                            resultsTextView.visibility = View.VISIBLE
+                        } catch (e: Exception) {
+                            Log.e(TAG, "Failed to parse JSON: ${e.message}")
+                            Toast.makeText(
+                                this@MainActivity,
+                                "Failed to parse response",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
                 } else {
                     Log.e(TAG, "Request failed with status: ${response.code()}")
-                    Toast.makeText(this@MainActivity, "Failed to process image", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@MainActivity, "Failed to process image", Toast.LENGTH_SHORT)
+                        .show()
                 }
             }
 
