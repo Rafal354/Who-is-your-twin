@@ -9,11 +9,11 @@ import androidx.core.content.ContextCompat
 
 class PermissionsManager(private val activity: AppCompatActivity) {
 
-    private val REQUIRED_PERMISSIONS =
+    private val requiresPermission =
         arrayOf(Manifest.permission.CAMERA, Manifest.permission.INTERNET)
 
-    val requestMultiplePermissionsLauncher =
-        activity.registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
+    private val requestMultiplePermissionsLauncher =
+        activity.registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { _ ->
             if (allPermissionsGranted()) {
                 Log.d(TAG, "Permissions granted")
             } else {
@@ -21,7 +21,7 @@ class PermissionsManager(private val activity: AppCompatActivity) {
             }
         }
 
-    fun allPermissionsGranted(): Boolean = REQUIRED_PERMISSIONS.all {
+    fun allPermissionsGranted(): Boolean = requiresPermission.all {
         ContextCompat.checkSelfPermission(
             activity.baseContext,
             it
@@ -29,7 +29,7 @@ class PermissionsManager(private val activity: AppCompatActivity) {
     }
 
     fun requestPermissions() {
-        requestMultiplePermissionsLauncher.launch(REQUIRED_PERMISSIONS)
+        requestMultiplePermissionsLauncher.launch(requiresPermission)
     }
 
     companion object {

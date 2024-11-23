@@ -53,6 +53,7 @@ android {
 }
 
 dependencies {
+    implementation("androidx.recyclerview:recyclerview-selection:1.1.0")
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
     implementation(libs.androidx.core.ktx)

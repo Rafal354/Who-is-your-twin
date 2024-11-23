@@ -1,6 +1,7 @@
 package com.example.whosyourtwin
 
 import android.content.Context
+import android.os.Parcelable
 import android.util.Log
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -18,7 +19,7 @@ class ImageUploadManager {
     fun uploadImageToServer(
         inputStream: InputStream,
         context: Context,
-        callback: (String) -> Unit
+        callback: (ArrayList<out Parcelable>?) -> Unit
     ) {
         try {
             val tempFile = File(context.cacheDir, "temp_image.jpg")
@@ -39,32 +40,36 @@ class ImageUploadManager {
                         if (!responseBody.isNullOrEmpty()) {
                             try {
                                 val jsonResponse = JSONObject(responseBody)
-                                val results = StringBuilder()
+                                val resultList = mutableListOf<NamePercentage>()
 
                                 jsonResponse.keys().forEach {
                                     val value = jsonResponse.getDouble(it)
-                                    results.append("$it: ${String.format("%.2f", value * 100)}%\n")
+                                    val name = it
+                                    val percentage = (value * 100).toInt()
+
+                                    resultList.add(NamePercentage(name, percentage))
                                 }
-                                callback(results.toString())
+                                callback(ArrayList(resultList))
+
                             } catch (e: Exception) {
                                 Log.e(TAG, "Failed to parse JSON: ${e.message}")
-                                callback("Failed to parse response")
+                                callback(ArrayList(emptyList()))
                             }
                         }
                     } else {
                         Log.e(TAG, "Request failed with status: ${response.code()}")
-                        callback("Failed to process image")
+                        callback(ArrayList(emptyList()))
                     }
                 }
 
                 override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                     Log.e(TAG, "Request failed: ${t.message}")
-                    callback("Error: ${t.message}")
+                    callback(ArrayList(emptyList()))
                 }
             })
         } catch (e: Exception) {
             Log.e(TAG, "Error during image upload: ${e.message}")
-            callback("Error during image upload")
+            callback(ArrayList(emptyList()))
         }
     }
 

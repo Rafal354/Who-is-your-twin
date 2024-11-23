@@ -11,7 +11,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-class CameraManager(private val activity: AppCompatActivity) {
+class CameraManager(private val activity: AppCompatActivity, private val imageViewId: Int) {
 
     private lateinit var savedImageFile: File
     private val outputDirectory: File by lazy {
@@ -25,7 +25,7 @@ class CameraManager(private val activity: AppCompatActivity) {
         activity.registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
             if (success) {
                 Log.d(TAG, "Image captured successfully: $savedImageFile")
-                activity.findViewById<ImageView>(R.id.imageView)
+                activity.findViewById<ImageView>(imageViewId)
                     .setImageURI(Uri.fromFile(savedImageFile))
             } else {
                 Log.e(TAG, "Image capture failed")

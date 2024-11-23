@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.whosyourtwin">
 
-    <!-- Permissions -->
     <uses-feature
         android:name="android.hardware.camera"
         android:required="false" />
@@ -30,7 +29,6 @@
         android:theme="@style/Theme.WhosYourTwin"
         tools:targetApi="31">
 
-        <!-- FileProvider configuration -->
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.example.whosyourtwin.fileprovider"
@@ -41,25 +39,25 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
-        <!-- SplashActivity as the starting activity -->
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:label="MainActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>
-                <!-- SplashActivity should be the MAIN entry point -->
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <!-- MainActivity, accessible internally -->
         <activity
-            android:theme="@style/AppTheme"
-            android:name=".Activity"
+            android:name=".DisplayImageActivity"
             android:exported="true"
-            android:label="Activity" />
+            android:theme="@style/AppTheme" />
+
+        <activity
+            android:name=".DisplayResultActivity"
+            android:exported="true"
+            android:theme="@style/AppTheme" />
 
     </application>
 
