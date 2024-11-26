@@ -1,14 +1,20 @@
 <resources>
     <string name="app_name">Who’s Your Twin</string>
     <string name="action_go">Go</string>
-    <string name="baking_title">Baking with Gemini</string>
     <string name="label_prompt">Prompt</string>
-    <string name="prompt_placeholder">Provide a recipe for the baked goods in the image</string>
-    <string name="image1_description">Cupcake</string>
-    <string name="image2_description">Cookies</string>
-    <string name="image3_description">Cake</string>
     <string name="results_placeholder">(Results will appear here)</string>
     <string name="captured_image">Captured Image</string>
     <string name="capture_image">Capture Image</string>
     <string name="image_info">Image Info</string>
+    <string name="send_request_to_python">Send Request to Service</string>
+    <string name="results_will_appear_here">Results will appear here</string>
+    <string name="go_to_main_activity">Go to Main Activity</string>
+    <string name="background_image">background photo</string>
+    <string name="who_s_your_twin">Who\'s Your Twin?</string>
+    <string name="find_your_twin">Find your twin</string>
+    <string name="percentage">Percentage</string>
+    <string name="name">Name</string>
+    <string name="back">Back</string>
+    <string name="take_a_photo">Take a photo</string>
+    <string name="try_again">Try again</string>
 </resources>
